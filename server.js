@@ -4,7 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-
+app.use('/api/survey', require('./routes/survey'));
 app.use(cors());
 app.use(express.json());
 
