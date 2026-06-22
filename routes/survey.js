@@ -1,27 +1,18 @@
-const router = require("express").Router();
-const Survey = require("../models/survey");
-const auth = require("../middleware/auth");
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
 
-// Submit — protected (must be logged in)
-router.post("/", auth, async (req, res) => {
-  try {
-    const entry = new Survey(req.body);
-    await entry.save();
-    res.status(201).json({ message: "Saved successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-// Get all — public (anyone can see)
-router.get("/", async (req, res) => {
-  try {
-    const data = await Survey.find().sort({ createdAt: -1 });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log(err));
 
-module.exports = router;
+app.use("/api/survey", require("./routes/survey"));
+app.use("/api/auth", require("./routes/auth"));
+
+app.listen(5000, () => console.log("Server running on port 5000"));
 // https://survey-backend-pqqt.onrender.com
