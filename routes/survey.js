@@ -1,7 +1,9 @@
 const router = require("express").Router();
 const Survey = require("../models/survey");
+const auth = require("../middleware/auth");
 
-router.post("/", async (req, res) => {
+// Submit — protected (must be logged in)
+router.post("/", auth, async (req, res) => {
   try {
     const entry = new Survey(req.body);
     await entry.save();
@@ -11,7 +13,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all
+// Get all — public (anyone can see)
 router.get("/", async (req, res) => {
   try {
     const data = await Survey.find().sort({ createdAt: -1 });
@@ -22,3 +24,4 @@ router.get("/", async (req, res) => {
 });
 
 module.exports = router;
+// https://survey-backend-pqqt.onrender.com
