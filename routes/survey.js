@@ -13,7 +13,31 @@ router.post("/create", auth, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Admin updates an existing survey (Auth Required)
+router.put("/edit/:id", auth, async (req, res) => {
+  try {
+    const surveyId = req.params.id;
+    const { title, description, fields, assignedTo } = req.body;
+    
+    // Safety check: Prevent editing if already completed
+    const existingSurvey = await Survey.findById(surveyId);
+    if (!existingSurvey) return res.status(404).json({ error: "Survey not found" });
+    if (existingSurvey.isCompleted) {
+      return res.status(400).json({ error: "Cannot edit a completed survey. Data would be corrupted." });
+    }
 
+    // Update the record
+    const updatedSurvey = await Survey.findByIdAndUpdate(
+      surveyId,
+      { title, description, fields, assignedTo },
+      { new: true } // Returns the updated document
+    );
+
+    res.json({ message: "Survey updated successfully!", survey: updatedSurvey });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 // Admin fetches ALL surveys (Auth Required)
 router.get("/all", auth, async (req, res) => {
   try {
