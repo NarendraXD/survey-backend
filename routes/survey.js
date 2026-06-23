@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
+// another thing that i have done 
 // Get all entries (admin only)
 router.get("/", auth, async (req, res) => {
   try {
