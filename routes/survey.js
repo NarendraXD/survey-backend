@@ -23,6 +23,7 @@ router.post("/config", auth, (req, res) => {
 });
 
 // Submit survey (public)
+// Submit survey (NO auth required - public)
 router.post("/", async (req, res) => {
   try {
     const entry = new Survey({ responseData: req.body.responseData });
